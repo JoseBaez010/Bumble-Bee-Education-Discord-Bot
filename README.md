@@ -16,7 +16,11 @@ Multiply two numbers
 
 Find the log base two and ten for a number
 
-Using the Wikipedia API to search for the url 
+Using the Wikipedia API to search for the url of an article
+
+Using the Wikipedia API to provide a summary for an article
+
+Using the Wikipedia API to provide a random article
 
 Using the merriam-webster API to show the user the word of the day
 
