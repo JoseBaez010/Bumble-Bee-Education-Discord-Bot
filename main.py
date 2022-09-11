@@ -120,7 +120,7 @@ async def synon(ctx, x):
 #async def translate():
 #work in progress
 
-#Wikipedia
+#Wikipedia Section
 @bot.command()
 async def wikiUrl(ctx, url):  #Gets the desired Wikipedia URL
     url = url.lower().replace(" ", "_").replace("  ", "")
@@ -149,18 +149,16 @@ async def wikiRandom(ctx):  #Gets a random Wikipedia Article
         f"**{randomTitle}** \n\n{randomSummary}\n\nhttps://en.wikipedia.org/wiki/{url}"
     )
 #get quotes from zenquotes API 
-# def get_quote():
-#   response = requests.get("https://zenquotes.io/api/random")
-#   json_data = json.loads(response.text)
-#   quote = json_data[0]['q'] + " -" + json_data[0]['a']
-#   return(quote)
+def get_quote():
+     response = requests.get("https://zenquotes.io/api/random")
+     json_data = json.loads(response.text)
+     quote = json_data[0]['q'] + " -" + json_data[0]['a']
+     return(quote)
 
-# @bot.command()
-# async def motivate(ctx):
-#   quote = get_quote
-#   await ctx.send(
-#     f"**{quote}"
-#   )
+@bot.command()
+async def motivate(ctx):
+   quote = get_quote()
+   await ctx.send(f"**{quote}**")
   
 #This is to help us when we do too many commands at once discord does limit it
 try:
