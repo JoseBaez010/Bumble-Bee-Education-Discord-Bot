@@ -1,9 +1,9 @@
 #The imports for discord
 import os, discord, wikipedia, math, googletrans
 from discord.ext import commands
-from googletrans import Translator
 import requests
 import json
+from asyncio import sleep as s
 
 my_secret = os.environ['token']
 
@@ -12,10 +12,12 @@ intents = discord.Intents.default()
 intents.message_content = True
 bot = commands.Bot(command_prefix='!bub ', intents=intents)
 
+
 #This is to make sure that the bot is online when we turn it on
 @bot.event
 async def on_ready():
     print('We have logged in as {0.user}'.format(bot))
+
 
 #Math Section
 @bot.command()
@@ -29,6 +31,7 @@ async def add(ctx, x, y):
     embed.set_footer(text='Hope that helped!')
     await ctx.send(embed=embed)
 
+
 @bot.command()
 async def sub(ctx, x, y):
     w = int(x)
@@ -41,6 +44,7 @@ async def sub(ctx, x, y):
     embed.set_footer(text='Hope that helped!')
     await ctx.send(embed=embed)
 
+
 @bot.command()
 async def multi(ctx, x, y):
     w = int(x)
@@ -51,6 +55,7 @@ async def multi(ctx, x, y):
         colour=discord.Colour.yellow())
     embed.set_footer(text='Hope that helped!')
     await ctx.send(embed=embed)
+
 
 @bot.command()
 async def div(ctx, x, y):
@@ -63,6 +68,7 @@ async def div(ctx, x, y):
         colour=discord.Colour.yellow())
     embed.set_footer(text='Hope that helped!')
     await ctx.send(embed=embed)
+
 
 @bot.command()
 async def pow(ctx, x, y):
@@ -77,6 +83,7 @@ async def pow(ctx, x, y):
     embed.set_footer(text='Hope that helped!')
     await ctx.send(embed=embed)
 
+
 @bot.command()
 async def logTen(ctx, x):
     w = int(x)
@@ -87,6 +94,7 @@ async def logTen(ctx, x):
         colour=discord.Colour.yellow())
     embed.set_footer(text='Hope that helped!')
     await ctx.send(embed=embed)
+
 
 @bot.command()
 async def logTwo(ctx, x):
@@ -99,37 +107,52 @@ async def logTwo(ctx, x):
     embed.set_footer(text='Hope that helped!')
     await ctx.send(embed=embed)
 
+
 #English Section
 @bot.command()
 async def wordOfDay(ctx):
     await ctx.send('https://www.merriam-webster.com/word-of-the-day')
 
+
 @bot.command()
 async def define(ctx, x):
     await ctx.send('https://www.merriam-webster.com/dictionary/' + x)
+
 
 @bot.command()
 async def exampleSentence(ctx, x):
     await ctx.send('https://sentence.yourdictionary.com/' + x)
 
+
 @bot.command()
 async def synon(ctx, x):
     await ctx.send('https://www.merriam-webster.com/thesaurus/' + x)
 
+
 #@bot.command()
-#async def translate():
-#work in progress
+#async def translate(ctx, dest, *args):
+#  dest = dest.lower();
+#  if dest not in googletrans.LANGUAGES and dest not in googletrans.LANGCODES:    
+#    raise commands.BadArgument("Invalid language to translate text to")
+#  text = ' '.join(args)
+#  translator = googletrans.Translator(service_urls=['translate.googleapis.com'], )
+#  text_trans = translator.translate(text, dest=dest).text
+#  await ctx.send(text_trans)
+
 
 #Wikipedia Section
 @bot.command()
-async def wikiUrl(ctx, url):  #Gets the desired Wikipedia URL
-    url = url.lower().replace(" ", "_").replace("  ", "")
+async def wikiUrl(ctx, *args):  #Gets the desired Wikipedia URL
+    text = ' '.join(args)
+    url = text.lower().replace(" ", "_").replace("  ", "")
     await ctx.send('https://en.wikipedia.org/wiki/' + url)
 
+
 @bot.command()
-async def wikiSummary(ctx, url):  #Gets the desired Wikipedia summary
+async def wikiSummary(ctx, *args):  #Gets the desired Wikipedia summary
     try:
-        url = url.lower().replace(' ', '_').replace('  ', '_')
+        text = ' '.join(args)
+        url = text.lower().replace(' ', '_').replace('  ', '_')
         summary = wikipedia.summary(url, chars=1950)
         await ctx.send(f"{summary}\n\nhttps://en.wikipedia.org/wiki/{url}")
     except:
@@ -138,6 +161,7 @@ async def wikiSummary(ctx, url):  #Gets the desired Wikipedia summary
         await ctx.send(
             f"I can't seem to find a summary for that . . . Did you mean {search}"
         )
+
 
 @bot.command()
 async def wikiRandom(ctx):  #Gets a random Wikipedia Article
@@ -148,18 +172,28 @@ async def wikiRandom(ctx):  #Gets a random Wikipedia Article
     await ctx.send(
         f"**{randomTitle}** \n\n{randomSummary}\n\nhttps://en.wikipedia.org/wiki/{url}"
     )
-#get quotes from zenquotes API 
+
+
+#get quotes from zenquotes API
 def get_quote():
-     response = requests.get("https://zenquotes.io/api/random")
-     json_data = json.loads(response.text)
-     quote = json_data[0]['q'] + " -" + json_data[0]['a']
-     return(quote)
+    response = requests.get("https://zenquotes.io/api/random")
+    json_data = json.loads(response.text)
+    quote = json_data[0]['q'] + " -" + json_data[0]['a']
+    return (quote)
+
 
 @bot.command()
 async def motivate(ctx):
-   quote = get_quote()
-   await ctx.send(f"**{quote}**")
-  
+    quote = get_quote()
+    await ctx.send(f"**{quote}**")
+
+@bot.command()
+async def reminder(ctx, time: int, *, msg):  #Reminds the user (in mins)
+   while True:
+      await s(60*time)
+      await ctx.send(f'{msg}, {ctx.author.mention}')
+      break
+
 #This is to help us when we do too many commands at once discord does limit it
 try:
     bot.run(os.getenv('token'))
